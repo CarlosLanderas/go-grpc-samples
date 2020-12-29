@@ -82,6 +82,6 @@ func (bc *BoltClient) OpenDb() {
 	}
 }
 
-func NewDatabase() BoltClient {
+func GetDatabase() BoltClient {
 	return BoltClient{}
 }

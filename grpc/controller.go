@@ -7,7 +7,7 @@ import (
 
 type UserServiceGrpcServer struct {
 	UnimplementedUserServiceServer
-	userService user_service.UserService
+	userService user_service.IUserService
 }
 
 func (server UserServiceGrpcServer) GetUsers(context context.Context, request *GetUsersRequest) (*GetUsersResponse, error) {
@@ -29,6 +29,6 @@ func (server UserServiceGrpcServer) GetUsers(context context.Context, request *G
 }
 
 
-func NewUserServiceGrpcServer(userService user_service.UserService) UserServiceGrpcServer {
-	return UserServiceGrpcServer{userService}
+func NewUserServiceGrpcServer(userService user_service.IUserService) UserServiceGrpcServer {
+	return UserServiceGrpcServer{userService: userService}
 }

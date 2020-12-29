@@ -2,9 +2,9 @@ package main
 
 import (
 	"flag"
+	"go-grpc-samples/core"
 	"go-grpc-samples/dbclient"
 	userservicegrpc "go-grpc-samples/grpc"
-	user_service "go-grpc-samples/user-service"
 	"google.golang.org/grpc"
 	"log"
 	"net"
@@ -13,18 +13,19 @@ import (
 
 
 func main() {
-	seed := flag.Bool("seed", true, "Seed database accounts")
+	seed := flag.Bool("seed", false, "Seed database accounts")
 
 	flag.Parse()
 
-	db := dbclient.NewDatabase()
+	db := dbclient.GetDatabase()
+	db.OpenDb()
 
 	if *seed {
 		db.Seed()
 	}
 
-	db.OpenDb()
-	userService := user_service.NewUserService(db)
+
+	userService := core.NewUserService(db)
 
 	grpcServer := grpc.NewServer()
 	userservicegrpc.RegisterUserServiceServer(grpcServer, userservicegrpc.NewUserServiceGrpcServer(userService))
