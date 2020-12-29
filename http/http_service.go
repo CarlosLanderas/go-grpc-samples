@@ -2,6 +2,7 @@ package http
 
 import (
 	"encoding/json"
+	"fmt"
 	"github.com/gorilla/mux"
 	"go-grpc-samples/core"
 	"go-grpc-samples/dbclient"
@@ -29,7 +30,7 @@ func (s server) HandleUsers(w http.ResponseWriter, r *http.Request) {
 
 	users, err := s.userService.GetUsers(ids)
 
-	usersResponse:= make([]service.User, len(users))
+	var usersResponse []service.User
 
 	for _, user := range users {
 		usersResponse = append(usersResponse, service.User { Name: user.Name, Id: user.Id})
@@ -44,8 +45,12 @@ func (s server) HandleUsers(w http.ResponseWriter, r *http.Request) {
 }
 
 func (s server) Start(address string) {
+
 	s.router.HandleFunc("/users", s.HandleUsers)
 	http.Handle("/", s.router)
+
+	fmt.Println("Starting HTTP service on address", address)
+
 	err := http.ListenAndServe(address, nil)
 
 	if err != nil {
@@ -53,9 +58,8 @@ func (s server) Start(address string) {
 	}
 }
 
-func NewServer() server {
-	db := dbclient.GetDatabase()
-	db.OpenDb()
+func NewServer(db dbclient.BoltClient) server {
+
 
 	return server {
 		userService: core.NewUserService(db),

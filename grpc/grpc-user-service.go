@@ -1,6 +1,7 @@
 package grpc
 
 import (
+	"fmt"
 	"go-grpc-samples/core"
 	"go-grpc-samples/dbclient"
 	"google.golang.org/grpc"
@@ -9,10 +10,7 @@ import (
 	"os"
 )
 
-func Start(address string) {
-
-	db := dbclient.GetDatabase()
-	db.OpenDb()
+func Start(address string, db dbclient.BoltClient) {
 
 	userService := core.NewUserService(db)
 
@@ -26,5 +24,6 @@ func Start(address string) {
 		os.Exit(1)
 	}
 
+	fmt.Println("Starting GRPC service on address", address)
 	grpcServer.Serve(lis)
 }
