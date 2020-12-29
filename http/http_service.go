@@ -5,7 +5,9 @@ import (
 	"github.com/gorilla/mux"
 	"go-grpc-samples/core"
 	"go-grpc-samples/dbclient"
+	"go-grpc-samples/service"
 	"io/ioutil"
+	"log"
 	"net/http"
 )
 
@@ -22,21 +24,41 @@ func (s server) HandleUsers(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
-	var users []int
-	json.Unmarshal(content, &users)
+	var ids []int64
+	json.Unmarshal(content, &ids)
 
+	users, err := s.userService.GetUsers(ids)
 
+	usersResponse:= make([]service.User, len(users))
+
+	for _, user := range users {
+		usersResponse = append(usersResponse, service.User { Name: user.Name, Id: user.Id})
+	}
+
+	bytes, _ := json.Marshal(usersResponse)
+
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	w.Write(bytes)
 
 }
 
 func (s server) Start(address string) {
 	s.router.HandleFunc("/users", s.HandleUsers)
 	http.Handle("/", s.router)
+	err := http.ListenAndServe(address, nil)
+
+	if err != nil {
+		log.Fatal("Error starting http server on port", address)
+	}
 }
 
 func NewServer() server {
+	db := dbclient.GetDatabase()
+	db.OpenDb()
+
 	return server {
-		userService: core.NewUserService(dbclient.GetDatabase()),
+		userService: core.NewUserService(db),
 		router: mux.NewRouter(),
 	}
 }
