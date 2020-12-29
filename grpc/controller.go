@@ -2,7 +2,7 @@ package grpc
 
 import (
 	"context"
-	user_service "go-grpc-samples/user-service"
+	user_service "go-grpc-samples/service"
 )
 
 type UserServiceGrpcServer struct {

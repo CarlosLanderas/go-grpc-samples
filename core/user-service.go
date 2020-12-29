@@ -2,7 +2,7 @@ package core
 
 import (
 	"go-grpc-samples/dbclient"
-	"go-grpc-samples/user-service"
+	"go-grpc-samples/service"
 )
 
 
@@ -15,13 +15,13 @@ func NewUserService(dbClient dbclient.BoltClient) UserService {
 	return UserService{dbClient}
 }
 
-func (us UserService) GetUser(id int64) (user_service.User, error) {
+func (us UserService) GetUser(id int64) (service.User, error) {
 	return us.dbClient.GetUser(id)
 }
 
-func (us UserService) GetUsers(ids []int64) (map[int64]user_service.User, error) {
+func (us UserService) GetUsers(ids []int64) (map[int64]service.User, error) {
 
-	users := map[int64]user_service.User{}
+	users := map[int64]service.User{}
 
 	for _ , id := range ids {
 

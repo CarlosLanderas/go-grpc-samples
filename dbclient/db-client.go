@@ -4,8 +4,9 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/boltdb/bolt"
-	. "go-grpc-samples/user-service"
+	. "go-grpc-samples/service"
 	"log"
+	"strconv"
 )
 
 const UsersBucket = "Users"
@@ -59,7 +60,7 @@ func (bc *BoltClient) Seed()  {
 	var i int64
 
 	for i = 0; i < 100; i ++ {
-		name := "User_" + string(i)
+		name := "User_" + strconv.FormatInt(i, 10)
 		user := User{ Id: i, Name:  name}
 
 		jsonBytes, _ := json.Marshal(user)
