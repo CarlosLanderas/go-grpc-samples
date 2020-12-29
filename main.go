@@ -1,6 +1,7 @@
 package main
 
 import (
+	"flag"
 	"fmt"
 	"go-grpc-samples/dbclient"
 	userservicegrpc "go-grpc-samples/grpc"
@@ -12,6 +13,9 @@ import (
 
 
 func main() {
+	seed := flag.Bool("seed", false, "Enable database seed")
+	flag.Parse()
+
 
 	c := make(chan os.Signal)
 	signal.Notify(c, os.Interrupt, syscall.SIGTERM)
@@ -19,9 +23,11 @@ func main() {
 	db := dbclient.GetDatabase()
 	db.OpenDb()
 
-	go func() {
-		userservicegrpc.Start(":8000", db)
-	}()
+	if *seed {
+		db.Seed()
+	}
+
+	go userservicegrpc.Start(":8000", db)
 
 	go func() {
 		server := http.NewServer(db)

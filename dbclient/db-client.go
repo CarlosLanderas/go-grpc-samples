@@ -27,7 +27,7 @@ func (bc *BoltClient) GetUser(id int64) (User, error) {
 
 	err := bc.boltDB.View(func (tx *bolt.Tx) error {
 		b := tx.Bucket([]byte(UsersBucket))
-		userBytes := b.Get([]byte(string(id)))
+		userBytes := b.Get([]byte(strconv.FormatInt(id, 10)))
 
 		if userBytes == nil {
 			return fmt.Errorf("No user found for %s", id)
@@ -66,7 +66,7 @@ func (bc *BoltClient) Seed()  {
 		jsonBytes, _ := json.Marshal(user)
 		bc.boltDB.Update(func (tx *bolt.Tx) error {
 			b := tx.Bucket([]byte(UsersBucket))
-			err := b.Put([]byte(string(i)), jsonBytes)
+			err := b.Put([]byte(strconv.FormatInt(i,10)), jsonBytes)
 			return err
 		})
 	}
