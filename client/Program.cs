@@ -13,13 +13,16 @@ namespace client
 {
     class Program
     {
+        const string CertPath = "../../../../";
         static async Task Main(string[] args)
         {
 
             var httpHandler = new HttpClientHandler();
+
+            //Self-Signed cert is invalid
             httpHandler.ServerCertificateCustomValidationCallback = HttpClientHandler.DangerousAcceptAnyServerCertificateValidator;
             
-            X509Certificate2 cert = X509Certificate2.CreateFromPemFile("../../../../certs/server_cert.pem",  "../../../../certs/server_key.pem");
+            X509Certificate2 cert = X509Certificate2.CreateFromPemFile($"{CertPath}certs/server_cert.pem",  $"{CertPath}certs/server_key.pem");
             httpHandler.ClientCertificates.Add(cert);
 
 
