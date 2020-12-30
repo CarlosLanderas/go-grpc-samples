@@ -19,7 +19,7 @@ func (server UserServiceGrpcServer) GetUsers(context context.Context, request *G
 		return nil, err
 	}
 
-	usersResponse := make([]*User, len(users))
+	var usersResponse []*User
 
 	for _, user := range users {
 		usersResponse = append(usersResponse, &User{Id: user.Id, Name: user.Name})
