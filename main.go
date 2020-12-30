@@ -1,14 +1,11 @@
 package main
 
 import (
-	"crypto/tls"
 	"flag"
 	"fmt"
 	"go-grpc-samples/dbclient"
 	userservicegrpc "go-grpc-samples/grpc"
 	"go-grpc-samples/http"
-	"google.golang.org/grpc/credentials"
-	"log"
 	"os"
 	"os/signal"
 	"syscall"
@@ -29,14 +26,7 @@ func main() {
 		db.Seed()
 	}
 
-
-	cert, err := tls.LoadX509KeyPair("certs/server_cert.pem", "certs/server_key.pem")
-	if err != nil {
-		log.Fatal(err)
-	}
-
-
-	go userservicegrpc.Start(":8000", db, credentials.NewServerTLSFromCert(&cert))
+	go userservicegrpc.Start(":8000", db, true)
 
 	go func() {
 

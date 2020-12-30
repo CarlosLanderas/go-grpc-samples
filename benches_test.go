@@ -17,7 +17,7 @@ var db dbclient.BoltClient
 func init() {
 	db = dbclient.GetDatabase()
 	db.OpenDb()
-	go userservicegrpc.Start(":8000", db)
+	go userservicegrpc.Start(":8000", db, false)
 	go func() {
 		server := http.NewServer(db)
 		server.Start(":8001")
