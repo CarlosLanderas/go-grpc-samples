@@ -5,16 +5,24 @@ import (
 	"go-grpc-samples/core"
 	"go-grpc-samples/dbclient"
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/credentials"
 	"log"
 	"net"
 	"os"
 )
 
-func Start(address string, db dbclient.BoltClient) {
+func Start(address string, db dbclient.BoltClient, credentials credentials.TransportCredentials) {
 
 	userService := core.NewUserService(db)
 
-	grpcServer := grpc.NewServer()
+	var grpcServer *grpc.Server
+
+	if credentials != nil {
+		grpcServer = grpc.NewServer(grpc.Creds(credentials))
+	} else {
+		grpcServer = grpc.NewServer()
+	}
+
 	RegisterUserServiceServer(grpcServer, NewUserServiceGrpcServer(userService))
 
 	lis, err := net.Listen("tcp", address)
