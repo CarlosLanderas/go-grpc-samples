@@ -1,4 +1,4 @@
-package benches
+package main
 
 import (
 	"context"
@@ -7,7 +7,6 @@ import (
 	"google.golang.org/grpc"
 	"testing"
 )
-
 
 func init() {
 	db := dbclient.GetDatabase()

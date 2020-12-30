@@ -20,7 +20,7 @@ func Start(address string, db dbclient.BoltClient) {
 	lis, err := net.Listen("tcp", address)
 
 	if err != nil {
-		log.Fatal("Error, GRPC service can't listen on port %s", address)
+		log.Fatal("Error, GRPC service can't listen on port", address)
 		os.Exit(1)
 	}
 
